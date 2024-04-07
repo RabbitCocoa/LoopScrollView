@@ -30,7 +30,7 @@ namespace ET
         void OnRefreshHandler(Transform t, int i, int moveState)
         {
             
-            int showCount = GetComponent<LoopScrollView>().GetCurMaxShowItemCount();
+            int showCount = GetComponent<LoopScrollView>().GetMaxShowItemCount(this.Count);
             int index = GetComponent<LoopScrollView>().GetShowIndex(i);
 
             t.localScale = Vector3.one;

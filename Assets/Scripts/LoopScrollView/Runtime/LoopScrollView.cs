@@ -142,9 +142,9 @@ namespace ET.Client
         }
 
         //
-        public int GetCurMaxShowItemCount()
+        public int GetMaxShowItemCount(int count)
         {
-            return LayoutHandler?.GetItemCount(this.Count) ?? 0;
+            return LayoutHandler?.GetItemCount(count) ?? 0;
         }
 
         public int GetShowIndex(int i)
