@@ -37,7 +37,7 @@ namespace ET.Client
             }
         }
 
-
+        private float scale;
         private float slotPosX;
         private float slotPosY;
 
@@ -60,10 +60,10 @@ namespace ET.Client
 
         private float totalWidth => viewRect.rect.width;
         private float slotWidth => gridLayoutGroup.cellSize.x;
-
+        private float SlotWidth => this.slotWidth * this.scale;
         private float totalHeight => viewRect.rect.height;
         private float slotHeight => gridLayoutGroup.cellSize.y;
-
+        private float SlotHeight => slotHeight * this.scale;
         private int columnCount
         {
             get
@@ -71,14 +71,15 @@ namespace ET.Client
                 switch (gridLayoutGroup.constraint)
                 {
                     case GridLayoutGroup.Constraint.Flexible:
+                    case GridLayoutGroup.Constraint.FixedRowCount:
                         return (int)((totalWidth +
-                                      gridLayoutGroup.spacing.x) / (slotWidth + gridLayoutGroup.spacing.x));
+                                      gridLayoutGroup.spacing.x) / (SlotWidth + gridLayoutGroup.spacing.x));
 
                     case GridLayoutGroup.Constraint.FixedColumnCount:
                         return gridLayoutGroup.constraintCount;
 
-                    case GridLayoutGroup.Constraint.FixedRowCount:
-                        return Mathf.CeilToInt((float)dataCount / this.rowCount);
+
+                    //          return Mathf.CeilToInt((float)dataCount / this.rowCount);
                 }
 
                 throw new Exception($"GridLayout Constraint Error");
@@ -92,11 +93,12 @@ namespace ET.Client
                 switch (gridLayoutGroup.constraint)
                 {
                     case GridLayoutGroup.Constraint.Flexible:
-                        return (int)((totalHeight +
-                                      gridLayoutGroup.spacing.y) / (slotHeight + gridLayoutGroup.spacing.y));
-
                     case GridLayoutGroup.Constraint.FixedColumnCount:
-                        return Mathf.CeilToInt((float)dataCount / this.columnCount);
+
+                        return (int)((totalHeight +
+                                      gridLayoutGroup.spacing.y) / (SlotHeight + gridLayoutGroup.spacing.y));
+
+                    // return Mathf.CeilToInt((float)dataCount / this.columnCount);
 
 
                     case GridLayoutGroup.Constraint.FixedRowCount:
@@ -112,17 +114,20 @@ namespace ET.Client
         #endregion
 
         public GridLayoutHandler(LoopScrollView scrollView, RectTransform viewRect, RectTransform content,
-            RectTransform prefabItem, int dataCount)
+            RectTransform prefabItem, int dataCount,float scale )
         {
             this.loopScrollView = scrollView;
             this.content = content;
             this.viewRect = viewRect;
             this.dataCount = dataCount;
+            this.scale = scale;
             this.gridLayoutGroup = content.GetComponent<GridLayoutGroup>();
 
-
-            this.slotPosY = slotWidth * (1 - prefabItem.pivot.y);
-            this.slotPosX = slotHeight * prefabItem.pivot.x;
+            if (isVertical && isInverse)
+                this.slotPosY = SlotHeight * ( prefabItem.pivot.y);
+            else
+                this.slotPosY = SlotHeight * (1 - prefabItem.pivot.y);
+            this.slotPosX = SlotWidth * prefabItem.pivot.x;
 
 
             if (ItemCount > MaxShowCount)
@@ -160,7 +165,7 @@ namespace ET.Client
 
         public override Vector2 OnePageOffset
         {
-            get => new Vector2((slotWidth + gridLayoutGroup.spacing.x), (slotHeight + gridLayoutGroup.spacing.y));
+            get => new Vector2((SlotWidth + gridLayoutGroup.spacing.x), (SlotHeight + gridLayoutGroup.spacing.y));
         }
 
         #endregion
@@ -181,9 +186,9 @@ namespace ET.Client
 
             if (!isInverse)
             {
-                float top =startRow * OnePageOffset.y;
+                float top = startRow * OnePageOffset.y;
                 float bottom = (startRow + 1) * OnePageOffset.y;
-                float left = startCol* OnePageOffset.x;
+                float left = startCol * OnePageOffset.x;
                 float right = (startCol + 1) * OnePageOffset.x;
 
                 //头尾不需要处理
@@ -388,6 +393,76 @@ namespace ET.Client
             }
         }
 
+        public override int JumpTo(int index)
+        {
+            //判断index属于哪一列 或哪一行
+            
+            int startIndex = index;
+    
+            //调整ContentSize
+
+            //   startIndex = startIndex- MaxShowCount/2;
+            Vector2 anchorPos = Vector2.zero;
+
+            int startRow = isVertical? startIndex / columnCount : startIndex % rowCount;
+            int startCol = isVertical? startIndex % columnCount : startIndex / rowCount;
+
+         
+            
+            if (this.isVertical)
+            {
+                startRow = Mathf.Max(startRow -   this.rowCount/2,  0);
+            }
+            else
+            {
+                startCol = Mathf.Max(startCol -columnCount/2, 0);
+            }
+            
+            if (!isInverse)
+            {
+                float top = startRow * OnePageOffset.y;
+                float left = startCol * OnePageOffset.x;
+                if (this.isVertical)
+                {
+                    anchorPos = new Vector2(0, top);
+                }
+                else
+                {
+                    anchorPos = new Vector2(-left, 0);
+                }
+            }
+            else
+            {
+                float bottom = (startRow) * OnePageOffset.y;
+                float right = (startCol) * OnePageOffset.x;
+                if (this.isVertical)
+                {
+                    anchorPos = new Vector2(0, -bottom);
+                }
+                else
+                {
+                    anchorPos = new Vector2(right, 0);
+                }
+             
+             
+            }
+
+     
+
+            content.anchoredPosition = anchorPos;
+            
+            if (this.isVertical)
+            {
+                startIndex = startRow * this.columnCount ;
+            }
+            else
+            {
+                startIndex = startCol * this.rowCount ;
+            }
+            ReSize(startIndex);
+            return startIndex;
+        }
+
         #endregion
 
         private void ReSize(int startIndex)
@@ -405,7 +480,7 @@ namespace ET.Client
                 int overflow = (endIndex % columnCount == 0) ? 0 : 1;
 
                 ContentRect = new Vector2(ContentRect.x,
-                    (rows + overflow) * slotHeight + Mathf.Max(0, rows + overflow - 1) * gridLayoutGroup.spacing.y +
+                    (rows + overflow) * SlotHeight + Mathf.Max(0, rows + overflow - 1) * gridLayoutGroup.spacing.y +
                     gridLayoutGroup.padding.top + gridLayoutGroup.padding.bottom);
             }
             else
@@ -413,7 +488,7 @@ namespace ET.Client
                 // If the scroll is horizontal, we adjust the content width
                 int columns = endIndex / rowCount;
                 int overflow = (endIndex % rowCount == 0) ? 0 : 1;
-                ContentRect = new Vector2((columns + overflow) * slotWidth +
+                ContentRect = new Vector2((columns + overflow) * SlotWidth +
                                           Mathf.Max(0, columns + overflow - 1) * gridLayoutGroup.spacing.x +
                                           gridLayoutGroup.padding.left + gridLayoutGroup.padding.right, ContentRect.y);
             }

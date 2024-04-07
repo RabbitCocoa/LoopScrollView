@@ -309,6 +309,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &191494106
 GameObject:
   m_ObjectHideFlags: 0
@@ -385,7 +386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &284019023
 RectTransform:
   m_ObjectHideFlags: 0
@@ -467,7 +468,7 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
+  m_CellSize: {x: 100, y: 50}
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -657,6 +658,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &454629909
 GameObject:
   m_ObjectHideFlags: 0
@@ -1154,6 +1156,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &767837422
 GameObject:
   m_ObjectHideFlags: 0
@@ -1390,6 +1393,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 2
 --- !u!1 &831247665
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,7 +1503,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 2
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
+  m_CellSize: {x: 100, y: 50}
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
   m_ConstraintCount: 3
@@ -1726,7 +1730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &924267007
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1770,7 +1774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &942137274
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1874,6 +1878,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &955709541
 GameObject:
   m_ObjectHideFlags: 0
@@ -2483,6 +2488,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 2
 --- !u!1 &1291283795
 GameObject:
   m_ObjectHideFlags: 0
@@ -2606,6 +2612,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &1315566238
 GameObject:
   m_ObjectHideFlags: 0
@@ -2729,6 +2736,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &1330491419
 GameObject:
   m_ObjectHideFlags: 0
@@ -2786,7 +2794,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
+  m_CellSize: {x: 100, y: 50}
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
@@ -2809,7 +2817,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1383843861
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2913,6 +2921,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1.5
 --- !u!1 &1420234741
 GameObject:
   m_ObjectHideFlags: 0
@@ -2968,7 +2977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1548113732
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3154,7 +3163,7 @@ MonoBehaviour:
   m_ChildAlignment: 1
   m_StartCorner: 2
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
+  m_CellSize: {x: 100, y: 50}
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
   m_ConstraintCount: 1
@@ -3344,6 +3353,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &1786364716
 GameObject:
   m_ObjectHideFlags: 0
@@ -3593,6 +3603,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &1806756443
 GameObject:
   m_ObjectHideFlags: 0
@@ -3702,6 +3713,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1.5
 --- !u!114 &1806756448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3891,6 +3903,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &1911475086
 GameObject:
   m_ObjectHideFlags: 0
@@ -4179,6 +4192,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1
 --- !u!1 &2029304403
 GameObject:
   m_ObjectHideFlags: 0
@@ -4302,6 +4316,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 2
 --- !u!1 &2073088909
 GameObject:
   m_ObjectHideFlags: 0
@@ -4425,3 +4440,4 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  scale: 1

@@ -24,6 +24,10 @@ namespace ET.Client
         {
             throw new System.NotImplementedException();
         }
+        public virtual int JumpTo(int startIndex)
+        {
+            throw new System.NotImplementedException();
+        }
 
         public virtual Vector2 GetItemPos(int index)
         {

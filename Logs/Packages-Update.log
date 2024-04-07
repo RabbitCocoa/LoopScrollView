@@ -44,3 +44,16 @@ The following packages were updated:
   com.unity.collab-proxy from version 1.13.5 to 2.0.1
   com.unity.timeline from version 1.6.2 to 1.6.4
   com.unity.visualscripting from version 1.7.6 to 1.8.0
+
+=== Sun Apr  7 12:49:03 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 2.0.1 to 2.2.0
+  com.unity.ide.rider from version 3.0.18 to 3.0.26
+  com.unity.ide.visualstudio from version 2.0.17 to 2.0.22
+  com.unity.test-framework from version 1.1.31 to 1.1.33
+  com.unity.timeline from version 1.6.4 to 1.6.5
+  com.unity.visualscripting from version 1.8.0 to 1.9.1

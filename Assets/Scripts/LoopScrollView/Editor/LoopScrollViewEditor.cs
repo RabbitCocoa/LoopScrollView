@@ -19,6 +19,7 @@ namespace ET.Client
         public override void OnInspectorGUI()
         {
             LoopScrollView loopScrollView = (LoopScrollView)target;
+            loopScrollView.scale =  EditorGUILayout.FloatField("Scale", loopScrollView.scale);
 
             loopScrollView.content = EditorGUILayout.ObjectField("Content",loopScrollView.content,typeof(RectTransform),true) as RectTransform;
             loopScrollView.viewport = EditorGUILayout.ObjectField("ViewPort",loopScrollView.viewport,typeof(RectTransform),true) as RectTransform;

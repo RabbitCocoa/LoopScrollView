@@ -25,6 +25,7 @@ namespace ET
                     transform1.GetComponent<Text>().text = i.ToString()
                 ));
             GetComponent<LoopScrollView>()?.InitLoopScroll(prefab, Count);
+            GetComponent<LoopScrollView>()?.JumpTo(29);
         }
     }
 }

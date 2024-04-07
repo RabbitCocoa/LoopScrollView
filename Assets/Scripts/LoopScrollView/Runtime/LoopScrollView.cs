@@ -36,6 +36,7 @@ namespace ET.Client
 
         #region Inspertor
 
+        public float scale = 1;
         public new bool horizontal
         {
             get => base.horizontal;
@@ -72,7 +73,7 @@ namespace ET.Client
 
             this.itemPrefab = itemPrefab;
             this.Count = Count;
-
+            itemPrefab.transform.localScale = Vector3.one * scale;
 
             onValueChanged.RemoveListener(DragUpdate);
             onValueChanged.AddListener(DragUpdate);
@@ -88,7 +89,7 @@ namespace ET.Client
 
                 this.LayoutHandler = new VerticalLayoutHandler(this,
                     this.itemPrefab.transform as RectTransform,
-                    Count
+                    Count,scale
                 );
             }
             else if (layoutGroup.GetType() == typeof(HorizontalLayoutGroup))
@@ -97,7 +98,7 @@ namespace ET.Client
 
                 this.LayoutHandler = new HorizontalLayoutHandler(this,
                     this.itemPrefab.transform as RectTransform,
-                    Count);
+                    Count,scale);
             }
             else if (layoutGroup.GetType() == typeof(GridLayoutGroup))
             {
@@ -106,7 +107,7 @@ namespace ET.Client
                     
 
                 this.LayoutHandler = new GridLayoutHandler(this,
-                    viewport, content, itemPrefab.transform as RectTransform, Count);
+                    viewport, content, itemPrefab.transform as RectTransform, Count,scale);
                 isInverse = ((GridLayoutHandler)LayoutHandler).isInverse;
             }
 
@@ -127,6 +128,15 @@ namespace ET.Client
 
             layoutGroup.enabled = false;
         }
+        public void JumpTo(int index)
+        {
+            //    index = index + 1 - LayoutHandler.MaxShowCount;
+            index = index < 0 ? 0 : index;
+            index =  LayoutHandler.JumpTo(index);
+            lastIndex = index;
+           
+            ResetDataAndPos(index);
+        }
 
 
         public void ChangeCount(int Count)
@@ -141,6 +151,11 @@ namespace ET.Client
             this.OnLoopRefershHandler = OnLoopRefershHandler;
         }
 
+        public void RefreshData()
+        {
+            int index = LayoutHandler.GetStartIndexAndReSize(true);
+            ResetDataAndPos(index);
+        }
         #endregion
 
         //当数据改变时 重新生成Slot

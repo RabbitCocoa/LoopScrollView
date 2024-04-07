@@ -21,6 +21,7 @@ namespace ET.Client
         private VerticalLayoutGroup verticalLayoutGroup;
         private RectTransform content;
         private RectTransform viewRect;
+        private float scale;
         private float slotHeight;
         private float slotPosX;
         private float slotPosY;
@@ -30,6 +31,7 @@ namespace ET.Client
 
         #region Help Component Property
 
+        private float SlotHeight => this.slotHeight * this.scale;
         private float totalHeight => viewRect?.rect.height ?? 0;
 
         private RectOffset padding => verticalLayoutGroup?.padding;
@@ -48,17 +50,20 @@ namespace ET.Client
         #endregion
 
         public VerticalLayoutHandler(LoopScrollView loopScrollView,
-            RectTransform prefabItem, int dataCount)
+            RectTransform prefabItem, int dataCount, float scale)
         {
             this.content = loopScrollView.content;
             this.viewRect = loopScrollView.viewport;
             this.dataCount = dataCount;
-
-            this.slotPosY = prefabItem.rect.height * (1 - prefabItem.pivot.y);
+            this.verticalLayoutGroup = content.GetComponent<VerticalLayoutGroup>();
+            if (isInverse)
+                this.slotPosY = prefabItem.rect.height * (prefabItem.pivot.y);
+            else
+                this.slotPosY = prefabItem.rect.height * (1 - prefabItem.pivot.y);
             this.slotPosX = prefabItem.rect.width * prefabItem.pivot.x;
 
+            this.scale = scale;
 
-            this.verticalLayoutGroup = content.GetComponent<VerticalLayoutGroup>();
             this.slotHeight = prefabItem.rect.height;
 
             if (ItemCount > MaxShowCount)
@@ -71,7 +76,7 @@ namespace ET.Client
         {
             get
             {
-                int count = (int)((totalHeight + spacing) / (slotHeight + spacing));
+                int count = (int)((totalHeight + spacing) / (SlotHeight + spacing));
                 return count;
             }
         }
@@ -89,7 +94,7 @@ namespace ET.Client
 
         public override Vector2 OnePageOffset
         {
-            get => new Vector2(0, slotHeight + spacing);
+            get => new Vector2(0, SlotHeight + spacing);
         }
 
         #endregion
@@ -147,9 +152,9 @@ namespace ET.Client
             }
             else
             {
-                float top = (startIndex+1) * OnePageOffset.y;
+                float top = (startIndex + 1) * OnePageOffset.y;
                 ;
-                float bottom = (startIndex ) * OnePageOffset.y;
+                float bottom = (startIndex) * OnePageOffset.y;
 
                 //头尾不需要处理
                 if (startIndex == 0 && -anchorPos.y < bottom)
@@ -180,7 +185,7 @@ namespace ET.Client
                 else if (forceResize)
                 {
                     ReSize(startIndex);
-                } 
+                }
             }
 
             return startIndex;
@@ -193,7 +198,7 @@ namespace ET.Client
             int inv = isInverse ? -1 : 1;
 
             float xOffset = 0;
-            switch (    verticalLayoutGroup.childAlignment)
+            switch (verticalLayoutGroup.childAlignment)
             {
                 case TextAnchor.UpperLeft:
                 case TextAnchor.MiddleLeft:
@@ -203,21 +208,20 @@ namespace ET.Client
                 case TextAnchor.UpperCenter:
                 case TextAnchor.MiddleCenter:
                 case TextAnchor.LowerCenter:
-                    xOffset = viewRect.rect.width/2 - slotPosX ;
+                    xOffset = viewRect.rect.width / 2 - slotPosX;
                     break;
                 case TextAnchor.UpperRight:
                 case TextAnchor.MiddleRight:
                 case TextAnchor.LowerRight:
-                    xOffset = viewRect.rect.width - 2*slotPosX;
+                    xOffset = viewRect.rect.width - 2 * slotPosX;
                     xOffset -= padding.right;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-        
-            
-            return new Vector2(slotPosX +xOffset,  inv * -p);
+
+            return new Vector2(slotPosX + xOffset, inv * -p);
         }
 
         public override void SetAnchor(RectTransform transform)
@@ -231,6 +235,37 @@ namespace ET.Client
             }
         }
 
+        public override int JumpTo(int index)
+        {
+            int startIndex = Mathf.Max(0, index - this.MaxShowCount / 2);
+
+
+            //调整ContentSize
+
+            //    startIndex = startIndex - MaxShowCount / 2;
+            Vector2 anchorPos = Vector2.zero;
+
+            if (!isInverse)
+            {
+                float top = (startIndex) * OnePageOffset.y;
+                ;
+                float bottom = (startIndex + 1) * OnePageOffset.y;
+                anchorPos = new Vector2(0, top);
+            }
+            else
+            {
+                float top = (startIndex + 1) * OnePageOffset.y;
+
+                float bottom = (startIndex) * OnePageOffset.y;
+                anchorPos = new Vector2(0, -bottom);
+            }
+
+            content.anchoredPosition = anchorPos;
+
+            ReSize(startIndex);
+            return this.startIndex;
+        }
+
         #endregion
 
 
@@ -241,7 +276,7 @@ namespace ET.Client
             if (endIndex < MaxShowCount)
                 endIndex = MaxShowCount;
 
-            this.ContentHeight = endIndex * slotHeight
+            this.ContentHeight = endIndex * SlotHeight
                                  + Mathf.Max(0, endIndex - 1) * spacing +
                                  padding.bottom + padding.top;
         }

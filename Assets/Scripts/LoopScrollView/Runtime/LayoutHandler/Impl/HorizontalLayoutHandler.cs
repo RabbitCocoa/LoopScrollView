@@ -15,7 +15,7 @@ namespace ET.Client
     public class HorizontalLayoutHandler : BaseLayoutHandler
     {
         #region 初始化时获得的Field
-
+        private float scale;
         private float slotWidth;
         private float slotPosX;
         private float slotPosY;
@@ -25,7 +25,7 @@ namespace ET.Client
         private RectTransform viewRect;
 
         #endregion
-
+        private float SlotWidth => this.slotWidth * this.scale;
         private bool isInverse => horizontalLayout.reverseArrangement;
 
 
@@ -49,13 +49,13 @@ namespace ET.Client
         #endregion
 
         public HorizontalLayoutHandler(LoopScrollView loopScrollView,
-            RectTransform prefabItem, int dataCount)
+            RectTransform prefabItem, int dataCount,float scale)
         {
             this.loopScrollView = loopScrollView;
             this.content = loopScrollView.content;
             this.viewRect = loopScrollView.viewport;
 
-
+            this.scale = scale;
             this.dataCount = dataCount;
 
             this.slotWidth = prefabItem.rect.width;
@@ -77,7 +77,7 @@ namespace ET.Client
         {
             get
             {
-                int count = (int)((totalWidth + spacing) / (slotWidth + spacing));
+                int count = (int)((totalWidth + spacing) / (SlotWidth + spacing));
                 return count;
             }
         }
@@ -95,7 +95,7 @@ namespace ET.Client
 
         public override Vector2 OnePageOffset
         {
-            get => new Vector2(slotWidth + spacing, 0);
+            get => new Vector2(SlotWidth + spacing, 0);
         }
 
         #endregion
@@ -228,7 +228,32 @@ namespace ET.Client
                 transform.anchorMax = Vector2.one;
             }
         }
+        public override int JumpTo(int index)
+        {
 
+            int startIndex = Mathf.Max(0, index - this.MaxShowCount/2); 
+            
+            //调整ContentSize
+
+            //   startIndex = startIndex- MaxShowCount/2;
+            Vector2 anchorPos = Vector2.zero;
+            
+            if (!isInverse)
+            {
+                float left = (startIndex) * OnePageOffset.x;
+                anchorPos = new Vector2(-left, 0);
+            }
+            else
+            {
+
+                float right = (startIndex) * OnePageOffset.x;
+                anchorPos = new Vector2(right, 0);
+            }
+
+            content.anchoredPosition = anchorPos;
+            ReSize(startIndex);
+            return startIndex;
+        }
         #endregion
 
         private void ReSize(int startIndex)
@@ -241,7 +266,7 @@ namespace ET.Client
                 endIndex = MaxShowCount;
 
             this.ContentWidth =
-                endIndex * slotWidth + Mathf.Max(0, endIndex - 1) * spacing +
+                endIndex * SlotWidth + Mathf.Max(0, endIndex - 1) * spacing +
                 padding.left + padding.right;
         }
     }
