@@ -21,7 +21,7 @@ namespace ET
 
         private void Awake()
         {
-            GetComponent<LoopScrollView>()?.SetRefreshHandler(((transform1, i) =>
+            GetComponent<LoopScrollView>()?.SetRefreshHandler(((transform1, i,_) =>
                     transform1.GetComponent<Text>().text = i.ToString()
                 ));
             GetComponent<LoopScrollView>()?.InitLoopScroll(prefab, Count);

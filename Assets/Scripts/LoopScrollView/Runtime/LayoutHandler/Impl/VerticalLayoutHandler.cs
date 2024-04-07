@@ -191,6 +191,14 @@ namespace ET.Client
             return startIndex;
         }
 
+        public override int GetItemCount(int dataCount)
+        {
+            if (dataCount <= MaxShowCount + 1)
+                return dataCount;
+
+            return MaxShowCount + 2;
+        }
+
         public override Vector2 GetItemPos(int index)
         {
             float pad = isInverse ? padding.bottom : padding.top;

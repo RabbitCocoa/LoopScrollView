@@ -30,13 +30,14 @@ namespace ET.Client
         #region Handler
 
         public BaseLayoutHandler LayoutHandler;
-        private Action<Transform, int> OnLoopRefershHandler;
+        private Action<Transform, int, int> OnLoopRefershHandler;
 
         #endregion
 
         #region Inspertor
 
         public float scale = 1;
+
         public new bool horizontal
         {
             get => base.horizontal;
@@ -89,7 +90,7 @@ namespace ET.Client
 
                 this.LayoutHandler = new VerticalLayoutHandler(this,
                     this.itemPrefab.transform as RectTransform,
-                    Count,scale
+                    Count, scale
                 );
             }
             else if (layoutGroup.GetType() == typeof(HorizontalLayoutGroup))
@@ -98,16 +99,15 @@ namespace ET.Client
 
                 this.LayoutHandler = new HorizontalLayoutHandler(this,
                     this.itemPrefab.transform as RectTransform,
-                    Count,scale);
+                    Count, scale);
             }
             else if (layoutGroup.GetType() == typeof(GridLayoutGroup))
             {
                 //不支持右下
-                
-                    
+
 
                 this.LayoutHandler = new GridLayoutHandler(this,
-                    viewport, content, itemPrefab.transform as RectTransform, Count,scale);
+                    viewport, content, itemPrefab.transform as RectTransform, Count, scale);
                 isInverse = ((GridLayoutHandler)LayoutHandler).isInverse;
             }
 
@@ -121,32 +121,55 @@ namespace ET.Client
             {
                 content.pivot = isInverse
                     ? new Vector2(0.5f, 0)
-                    : new Vector2(0.5f, 1); 
+                    : new Vector2(0.5f, 1);
             }
-            
+
             ReGenerateItems();
 
             layoutGroup.enabled = false;
         }
+
         public void JumpTo(int index)
         {
             //    index = index + 1 - LayoutHandler.MaxShowCount;
+            index = Math.Min(Count - LayoutHandler.MaxShowCount / 2 - 1, index);
             index = index < 0 ? 0 : index;
-            index =  LayoutHandler.JumpTo(index);
+
+            index = LayoutHandler.JumpTo(index);
             lastIndex = index;
-           
+
             ResetDataAndPos(index);
         }
 
+        //
+        public int GetCurMaxShowItemCount()
+        {
+            return LayoutHandler?.GetItemCount(this.Count) ?? 0;
+        }
 
-        public void ChangeCount(int Count)
+        public int GetShowIndex(int i)
+        {
+            
+            return i - lastIndex;
+        }
+
+        public void ChangeCount(int Count, bool SetClamp = true)
         {
             this.Count = Count;
             LayoutHandler.dataCount = Count;
+            if (Count <= this.LayoutHandler.MaxShowCount && SetClamp)
+            {
+                this.movementType = ScrollRect.MovementType.Clamped;
+            }
+            else
+            {
+                this.movementType = ScrollRect.MovementType.Elastic;
+            }
+
             ReGenerateItems();
         }
 
-        public void SetRefreshHandler(Action<Transform, int> OnLoopRefershHandler)
+        public void SetRefreshHandler(Action<Transform, int, int> OnLoopRefershHandler)
         {
             this.OnLoopRefershHandler = OnLoopRefershHandler;
         }
@@ -156,6 +179,7 @@ namespace ET.Client
             int index = LayoutHandler.GetStartIndexAndReSize(true);
             ResetDataAndPos(index);
         }
+
         #endregion
 
         //当数据改变时 重新生成Slot
@@ -164,22 +188,25 @@ namespace ET.Client
         //调整位置
         private void DragUpdate(Vector2 offset)
         {
-            int startIndex = LayoutHandler.GetStartIndexAndReSize();
+            int startIndex = LayoutHandler.GetStartIndexAndReSize(true);
 
             if (startIndex != lastIndex)
             {
-                lastIndex = startIndex;
                 ResetDataAndPos(startIndex);
             }
         }
 
         private void ResetDataAndPos(int startIndex)
         {
+            int moveState = Math.Sign(lastIndex - startIndex); // -1 0 1
+            moveState = lastIndex == startIndex ? 0 : moveState;
+
+            lastIndex = startIndex;
             for (int i = 0; i < itemSlots.Count; i++)
             {
                 if (itemSlots[i] == null)
                     return;
-                if (i +startIndex >= Count)
+                if (i + startIndex >= Count)
                 {
                     itemSlots[i].SetActive(false);
                     continue;
@@ -188,9 +215,10 @@ namespace ET.Client
                 {
                     itemSlots[i].SetActive(true);
                 }
+
                 (itemSlots[i].transform as RectTransform).anchoredPosition
                     = LayoutHandler.GetItemPos(i);
-                OnLoopRefershHandler(itemSlots[i].transform, startIndex + i);
+                OnLoopRefershHandler(itemSlots[i].transform, startIndex + i, moveState);
             }
         }
 

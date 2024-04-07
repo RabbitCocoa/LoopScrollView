@@ -267,6 +267,26 @@ namespace ET.Client
             return startIndex;
         }
 
+        public override int GetItemCount(int dataCount)
+        {
+            if (isVertical)
+            {
+                if (dataCount <= MaxShowCount + columnCount)
+                    return dataCount;
+
+                if (dataCount - startIndex < (rowCount + 2) * columnCount)
+                    return dataCount - startIndex;
+
+                return (rowCount + 2) * columnCount;
+            }
+            else
+            {
+                if (dataCount <= MaxShowCount + rowCount)
+                    return dataCount;
+                return rowCount * (columnCount + 2);
+            }
+        }
+
         public override Vector2 GetItemPos(int index)
         {
             int start = isVertical ? startIndex / columnCount : startIndex / rowCount;

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace ET.Client
 {
-    public class BaseLayoutHandler : ILayoutHandler
+    public abstract class BaseLayoutHandler : ILayoutHandler
     {
         public int dataCount;
 
@@ -24,6 +24,7 @@ namespace ET.Client
         {
             throw new System.NotImplementedException();
         }
+        public abstract int GetItemCount(int dataCount);
         public virtual int JumpTo(int startIndex)
         {
             throw new System.NotImplementedException();
